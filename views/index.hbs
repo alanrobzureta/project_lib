@@ -1,0 +1,29 @@
+<h1>{{title}}</h1>
+<p>Primeiro teste usando {{title}}</p>
+<p>Desenvolvido por {{name}}</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>index</th>
+            <th>name</th>
+        </tr>        
+    </thead>
+    <tbody>
+    {{#each data}}        
+        <tr>
+           {{#if @first}}
+                <td>--{{id}}--</td>
+                <td>--{{@index}}--</td>
+                <td>--{{name}}--</td>                
+           {{else}}
+                <td>{{id}}</td>
+                <td>{{@index}}</td>
+                <td>{{name}}</td>                
+           {{/if}}
+           <td>{{#date}}{{/date}}</td>           
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
