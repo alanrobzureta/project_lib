@@ -6,10 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');    
 var hbs = require('hbs');
+var connection = require('./models');
 
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var person = require('./routes/person');
 
 var app = express();
 
@@ -17,84 +19,6 @@ var app = express();
 hbs.registerHelper('date',function(){
     return new Date();
 });
-
-
-
-
-
-// mongoose connect
-mongoose.connect('mongodb://localhost/library');
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open',function(){
-    console.log('Procedimento OK, mongodb foi conectado!');
-});
-
-var person = mongoose.Schema({
-    name: {
-        firstname: String,
-        lastname: String
-    }
-});
-
-person.virtual('name.fullName').get(function () {
-    return this.name.firstname.concat(' ').concat(this.name.lastname);
-});
-
-var Person = mongoose.model('Person', person);
-
-Person.create({
-    name: {
-        firstname: 'Alan Robson',
-        lastname: 'Souza Gomes'
-    }
-}, function (err, person) {
-    if(err) {
-        console.log('Error -> ' + err)
-    }
-    console.log('Person Data -> ' + person);
-    console.log('Person Fullname -> ' + person.name.fullName);
-});
-
-var company = mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    address: {
-        name: String,
-        number: Number,
-        city: String
-    },
-    date: {
-        type: Date,
-        required: true,
-        default: Date.now
-    }
-});
-
-var Company = mongoose.model('Company', company);
-
-//var company = mongoose.Schema({
-//    name:String
-//});
-//var Company = mongoose.model('Company',company);
-//Company.create({
-//    name: 'Company 1'
-//},function(err,company){
-//    if(err){
-//        console.log('error');
-//        return
-//    }
-//    
-//    console.log('Created -> ',company);
-//});
-/* End configs mongoose */
-
-
-
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -110,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/person', person);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
