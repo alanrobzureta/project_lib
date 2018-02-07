@@ -29,20 +29,66 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open',function(){
     console.log('Procedimento OK, mongodb foi conectado!');
 });
-var company = mongoose.Schema({
-    name:String
-});
-var Company = mongoose.model('Company',company);
-Company.create({
-    name: 'Company 1'
-},function(err,company){
-    if(err){
-        console.log('error');
-        return
+
+var person = mongoose.Schema({
+    name: {
+        firstname: String,
+        lastname: String
     }
-    
-    console.log('Created -> ',company);
 });
+
+person.virtual('name.fullName').get(function () {
+    return this.name.firstname.concat(' ').concat(this.name.lastname);
+});
+
+var Person = mongoose.model('Person', person);
+
+Person.create({
+    name: {
+        firstname: 'Alan Robson',
+        lastname: 'Souza Gomes'
+    }
+}, function (err, person) {
+    if(err) {
+        console.log('Error -> ' + err)
+    }
+    console.log('Person Data -> ' + person);
+    console.log('Person Fullname -> ' + person.name.fullName);
+});
+
+var company = mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    address: {
+        name: String,
+        number: Number,
+        city: String
+    },
+    date: {
+        type: Date,
+        required: true,
+        default: Date.now
+    }
+});
+
+var Company = mongoose.model('Company', company);
+
+//var company = mongoose.Schema({
+//    name:String
+//});
+//var Company = mongoose.model('Company',company);
+//Company.create({
+//    name: 'Company 1'
+//},function(err,company){
+//    if(err){
+//        console.log('error');
+//        return
+//    }
+//    
+//    console.log('Created -> ',company);
+//});
 /* End configs mongoose */
 
 
